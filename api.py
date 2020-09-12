@@ -43,15 +43,18 @@ def create_user():
 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
-def get_single_user():
-    return {}
+def get_single_user(user_id):
+    return db.get_single_user([user_id])
 
 
 @app.route('/user/<int:user_id>', methods=['PUT'])
-def edit_single_user():
-    return {}
+def edit_single_user(user_id):
+    name = request.json['name']if 'name' in request.json else None
+    password = generate_password_hash(
+        request.json['password'], method='sha256') if 'password' in request.json else None
+    return db.edit_user(user_id, name, password)
 
 
 @app.route('/user/<int:user_id>', methods=['DELETE'])
-def delte_single_user():
-    return {}
+def delete_single_user(user_id):
+    return db.delete_user([user_id])
