@@ -76,6 +76,15 @@ class Database:
         except:
             return {'error': "Unable to fetch all users", "traceback": str(sys.exc_info())}
 
+    def get_single_user(self, user_id):
+        try:
+            self.cur.execute(
+                "SELECT id,name,password,created_at FROM users WHERE id=%s ", (user_id))
+            response = self.cur.fetchall()[0]
+            return {'id': response[0], 'name': response[1], 'password': response[2], 'created_at': response[3]}
+        except:
+            return {'error': "Unable to fetch /user/<id>", "traceback": str(sys.exc_info())}
+
     def create_user(self, name, password):
         try:
             self.cur.execute(
@@ -84,3 +93,31 @@ class Database:
             return {'response': 'new user created'}, 200
         except:
             return {'error': "Unable to delete todo", "traceback": str(sys.exc_info())}
+
+    def edit_user(self, id, name, password):
+        try:
+            if name is None and password is None:
+                return {'response': 'User was edited, put the provided data was the same as the previous one.'}, 200
+            else:
+                if name is not None and password is None:
+                    self.cur.execute(
+                        "UPDATE users SET name = %s WHERE id = %s", (name, id))
+                elif name is None and password is not None:
+                    self.cur.execute(
+                        "UPDATE users SET password = %s WHERE id = %s", (password, id))
+                else:
+                    self.cur.execute(
+                        "UPDATE users SET name = %s , password = %s WHERE id = %s", (name, password, id))
+                    self.conn.commit()
+                return {'response': 'User was edited'}, 200
+        except:
+            return {'error': "Unable to edit user", "traceback": str(sys.exc_info())}
+
+    def delete_user(self, id):
+        try:
+            self.cur.execute(
+                "DELETE FROM users WHERE id = %s", (id))
+            self.conn.commit()
+            return {'response': 'User deleted'}, 200
+        except:
+            return {'error': "Unable to delete user", "traceback": str(sys.exc_info())}
