@@ -30,6 +30,12 @@ class Database:
         self.conn.commit()
         return {'response': 'new todo created'}, 200
 
+    def delete_todo(self, id):
+        self.cur.execute(
+            "DELETE FROM todos WHERE id = %s", (id))
+        self.conn.commit()
+        return {'response': 'todo deleted'}, 200
+
     def edit_todo(self, id, title, completed):
         if title is None and completed is None:
             return {'response': 'todo was edited, put the provided data was the same as the current one.'}, 200
