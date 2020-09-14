@@ -1,8 +1,8 @@
 import json
 import uuid
 import datetime
-import jwt
 import sys
+from flask_cors import CORS
 from flask import Flask, request, jsonify, make_response
 from db import Database
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,6 +11,9 @@ from auth_service import auth_service, require_auth_token
 
 app = Flask(__name__)
 app.register_blueprint(auth_service)
+app.register_blueprint(user_service)
+CORS(app)
+
 db = Database("todoodledb")
 
 

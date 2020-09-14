@@ -91,7 +91,7 @@ class Database:
     def get_single_user_by_name(self, name):
         try:
             self.cur.execute(
-                "SELECT id,name,password,created_at FROM users WHERE name=%s ", (name))
+                "SELECT id,name,password,created_at FROM users WHERE name=%s ", ([name]))
             response = self.cur.fetchall()[0]
             return {'id': response[0], 'name': response[1], 'password': response[2], 'created_at': response[3]}
         except:
